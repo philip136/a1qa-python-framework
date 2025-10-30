@@ -25,13 +25,13 @@ class Input(BaseElement):
     @action("Type secret text in {element}")
     def type_secret(self, value: str) -> None:
         """Types secret text without logging the actual value."""
-        secret_text = string_utils.mask_secret()
+        secret_text = string_utils.mask_secret(value)
         self._type_text(text=secret_text, clear=False)
 
     @action("Clear field and type secret text in {element}")
     def type_secret_with_clear(self, value: str) -> None:
         """Clears the field before typing secret text (masked in logs)."""
-        secret_text = string_utils.mask_secret()
+        secret_text = string_utils.mask_secret(value)
         self._type_text(text=secret_text, clear=True)
 
     def get_value(self) -> str:
