@@ -4,7 +4,7 @@ from typing import Callable
 from playwright.sync_api import Locator, expect
 
 from framework.ui.constants.elements import WaitForState, ElementState
-from framework.ui.constants.timeouts import WaitTimeoutsMs
+from framework.ui.constants.timeouts import Timeouts
 
 logger = logging.getLogger(__name__)
 
@@ -40,19 +40,19 @@ class ElementStateHandler:
         logger.debug(f"Check if element '{self._name}' is selected")
         return self._locator.is_checked()
 
-    def wait_for_displayed(self, timeout: int = WaitTimeoutsMs.EXPLICIT_WAIT, expected: bool = True,
+    def wait_for_displayed(self, timeout: int = Timeouts.EXPLICIT_WAIT, expected: bool = True,
                            no_throw: bool = False) -> None:
         """Wait for the element to be visible or hidden."""
         state = WaitForState.VISIBLE if expected else WaitForState.HIDDEN
         self._wait_for_state(state, timeout, no_throw)
 
-    def wait_for_exist(self, timeout: int = WaitTimeoutsMs.EXPLICIT_WAIT, expected: bool = True,
+    def wait_for_exist(self, timeout: int = Timeouts.EXPLICIT_WAIT, expected: bool = True,
                        no_throw: bool = False) -> None:
         """Wait for the element to be attached or detached from the DOM."""
         state = WaitForState.ATTACHED if expected else WaitForState.DETACHED
         self._wait_for_state(state, timeout, no_throw)
 
-    def wait_for_enabled(self, timeout: int = WaitTimeoutsMs.EXPLICIT_WAIT, expected: bool = True,
+    def wait_for_enabled(self, timeout: int = Timeouts.EXPLICIT_WAIT, expected: bool = True,
                          no_throw: bool = False) -> None:
         """Wait for element to be enabled/disabled for interaction."""
         state = ElementState.ENABLED if expected else ElementState.DISABLED
@@ -63,7 +63,7 @@ class ElementStateHandler:
             no_throw=no_throw
         )
 
-    def wait_for_displayed_in_viewport(self, timeout: int = WaitTimeoutsMs.EXPLICIT_WAIT,
+    def wait_for_displayed_in_viewport(self, timeout: int = Timeouts.EXPLICIT_WAIT,
                                        expected: bool = True, no_throw: bool = False) -> None:
         """Wait for the element to be in/out of the viewport."""
         state = ElementState.IN_VIEWPORT if expected else ElementState.OUT_OF_VIEWPORT
@@ -75,7 +75,7 @@ class ElementStateHandler:
             no_throw=no_throw
         )
 
-    def wait_for_clickable(self, timeout: int = WaitTimeoutsMs.EXPLICIT_WAIT, expected: bool = True,
+    def wait_for_clickable(self, timeout: int = Timeouts.EXPLICIT_WAIT, expected: bool = True,
                            no_throw: bool = False) -> None:
         """Wait for the element to be clickable (enabled and visible)."""
         state = ElementState.CLICKABLE if expected else ElementState.NOT_CLICKABLE
