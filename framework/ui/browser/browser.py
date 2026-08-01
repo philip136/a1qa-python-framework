@@ -5,7 +5,7 @@ from playwright.sync_api import Page
 
 from framework.ui.browser.dialog import DialogHandler
 from framework.ui.browser.window import WindowManager
-from framework.ui.constants.timeouts import WaitTimeoutsMs
+from framework.ui.constants.timeouts import Timeouts
 from framework.utils import http_utils
 
 logger = logging.getLogger(__name__)
@@ -15,18 +15,27 @@ class Browser:
 
     def __init__(self, page: Page):
         self._page = page
+        self._dialog = DialogHandler(page)
+        self._window = WindowManager(self)
 
     @property
     def page(self) -> Page:
         return self._page
 
+    @page.setter
+    def page(self, new_page: Page) -> None:
+        """Update the single source of truth for the active page."""
+        logger.info("Switching active page context")
+        self._page = new_page
+        self._dialog = DialogHandler(new_page)
+
     @property
     def dialog(self) -> DialogHandler:
-        return DialogHandler(self.page)
+        return self._dialog
 
     @property
     def window(self) -> WindowManager:
-        return WindowManager(self.page)
+        return self._window
 
     def execute_script(self, js_script: str, *args: Any) -> Any:
         """Execute JavaScript code in the browser context."""
@@ -78,7 +87,7 @@ class Browser:
         except Exception as e:
             logger.error(f"Error taking screenshot: {e}")
 
-    def wait_for_delay(self, timeout: int = WaitTimeoutsMs.DEFAULT_DELAY) -> None:
+    def wait_for_delay(self, timeout: int = Timeouts.DEFAULT_DELAY) -> None:
         """Waits for the given `timeout` in milliseconds."""
         logger.debug(f"Waiting for {timeout}ms")
         self.page.wait_for_timeout(timeout)

@@ -1,28 +1,28 @@
 import logging
-from typing import Optional, Dict
+from typing import Optional, Dict, TYPE_CHECKING
 
 from playwright.sync_api import Page
 
-from configs.settings import DEFAULT_VIEWPORT_SIZE
 from framework.ui.decorators.decorators import step
 
+if TYPE_CHECKING:
+    from framework.ui.browser.browser import Browser
+
 logger = logging.getLogger(__name__)
+
+DEFAULT_VIEWPORT_SIZE = {"width": 1920, "height": 1080}
 
 
 class WindowManager:
     """Class for browser window operations such as resizing, switching tabs, navigation, etc."""
 
-    def __init__(self, page: Page):
-        self._page = page
+    def __init__(self, browser: 'Browser'):
+        self._browser = browser
 
     @property
     def page(self) -> Page:
-        return self._page
-
-    @page.setter
-    def page(self, new_page: Page) -> None:
-        logger.info(f"Switch active page context")
-        self._page = new_page
+        """Returns the currently active page from the Browser (single source of truth)."""
+        return self._browser.page
 
     @step("Close current window")
     def close_current_window(self) -> None:
@@ -57,7 +57,7 @@ class WindowManager:
         logger.debug(f"Switch to window with name containing: '{name}'")
         for page in self.page.context.pages:
             if name in page.title() or name in page.url:
-                self.page = page
+                self._browser.page = page
                 return
         raise ValueError(f"No window found with title or URL containing: {name}")
 
@@ -66,10 +66,10 @@ class WindowManager:
         """Switch to the most recently opened window (tab)."""
         pages = self.page.context.pages
         logger.debug(f"Total windows count: {len(pages)})")
-        self.page = pages[-1]
+        self._browser.page = pages[-1]
 
     @step("Switch to first window")
     def switch_to_first_window(self) -> None:
         """Switch to the first opened window (tab)."""
         pages = self.page.context.pages
-        self.page = pages[0]
+        self._browser.page = pages[0]
