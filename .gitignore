@@ -13,7 +13,8 @@ htmlcov/
 .vscode/
 /shelf/
 /workspace.xml
-.allure/
 .env
 downloads/
 *.png
+# Test resources are part of the repo and must not be swept up by the *.png rule above
+!tests/resources/*.png

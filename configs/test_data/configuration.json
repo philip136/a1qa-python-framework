@@ -1,7 +1,6 @@
 {
   "download_file_name": "test.txt",
   "download_dir": "downloads",
-  "file_for_upload": "test_file.txt",
-  "source_dir": "tests/resources",
-  "login_success_message": "Welcome to the Secure Area. When you are done click logout below."
+  "file_for_upload": "avatar.png",
+  "source_dir": "tests/resources"
 }

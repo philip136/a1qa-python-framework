@@ -29,6 +29,24 @@ class FileUploader(BaseElement):
         file_paths = self._normalize_paths(paths)
         self.locator.set_input_files(file_paths)
 
+    @action("Click on {element} and upload files through the file chooser")
+    def upload_files_with_chooser(self, paths: Union[pathlib.Path, str, List[Union[pathlib.Path, str]]]) -> None:
+        """
+        Click the element and pass the file(s) to the file chooser it opens.
+
+        Use this when the upload control is not an '<input type="file">' element and the page
+        exposes no file input to target, so 'upload_files' cannot be used.
+
+        :param paths: A single path or a list of file paths (as str or pathlib.Path).
+        :raises TypeError: If the input is not a valid path or list of paths.
+        """
+        logger.debug(f"Select file '{paths}' for uploading through the file chooser...")
+
+        file_paths = self._normalize_paths(paths)
+        with self._page.expect_file_chooser() as file_chooser_info:
+            self.click()
+        file_chooser_info.value.set_files(file_paths)
+
     def _normalize_paths(self, paths: Union[pathlib.Path, str, List[Union[pathlib.Path, str]]]) -> List[pathlib.Path]:
         """Normalize the input to a list of pathlib.Path objects. """
         if isinstance(paths, (str, pathlib.Path)):
