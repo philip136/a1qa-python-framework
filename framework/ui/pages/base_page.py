@@ -40,21 +40,6 @@ class BasePage:
             logger.debug(f"Failed to open page: {self.name}")
             return False
 
-    def click_and_switch_to_new_tab(self, element: BaseElement) -> Page:
-        """
-        Clicks an element that opens a new tab and switches to it.
-
-        :param element: Element to click that opens a new tab.
-        :return: The new Page object representing the newly opened tab.
-        """
-        logger.debug(f"Click on element '{element._name}' to open a new tab.")
-        with self.page.context.expect_page() as new_page_info:
-            element.click()
-        new_page = new_page_info.value
-        new_page.wait_for_load_state(state=PageEvent.LOAD.value, timeout=WaitTimeoutsMs.WAIT_PAGE_LOAD)
-        self.page = new_page
-        logger.info("Switched to new tab.")
-        return new_page
 
     def wait_for_page_to_load(self) -> None:
         logger.debug(f"Waiting for page '{self.name}' to load")

@@ -1,5 +1,5 @@
 import logging
-from typing import Any, List, Union
+from typing import Callable, Any, List, Union
 
 from playwright.sync_api import Page
 
@@ -82,3 +82,20 @@ class Browser:
         """Waits for the given `timeout` in milliseconds."""
         logger.debug(f"Waiting for {timeout}ms")
         self.page.wait_for_timeout(timeout)
+
+    def open_in_new_tab(self, action_callback: Callable[[], Any]) -> Page:
+        """
+        Executes an action that opens a new browser tab/window,
+        waits for it to load, updates the browser's active page, and returns it.
+
+        :param action_callback: A callable that triggers opening the new tab (e.g. clicking a link).
+        :return: The newly opened Playwright Page instance.
+        """
+        logger.info("Opening link in a new tab...")
+        with self.page.context.expect_page() as page_info:
+            action_callback()
+        new_page = page_info.value
+        new_page.wait_for_load_state(state="load", timeout=Timeouts.WAIT_PAGE_LOAD)
+        self.page = new_page
+        logger.info(f"Switched to new tab: '{new_page.url}'")
+        return new_page
