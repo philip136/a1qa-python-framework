@@ -70,7 +70,8 @@ class Table(BaseElement):
     def parse_table_to_objects(self, data: List[dict], dataclass_type: type) -> List:
         """
         Parse a list of dictionaries (from table rows) into a list of dataclass objects.
-        This version safely maps table columns to dataclass fields regardless of order.
+        Note: This mapping is POSITIONAL. The order of columns in the table must exactly 
+        match the order of attributes defined in the dataclass.
 
         :param data: List of dictionaries containing table row data.
         :param dataclass_type: The dataclass type to parse into.

@@ -10,7 +10,6 @@ import yaml
 DEFAULT_CONFIG_FILE = pathlib.Path(__file__).parent / 'log_config.yaml'
 
 LOGS_DIRECTORY = pathlib.Path('logs')
-LOGS_DIRECTORY.mkdir(exist_ok=True)
 
 DATETIME_FORMAT = "%Y-%m-%d %H-%M-%S"
 
@@ -62,6 +61,7 @@ def setup_logger(config_path: pathlib.Path = DEFAULT_CONFIG_FILE) -> None:
 
     :param config_path: Path to the YAML logging config file.
     """
+    LOGS_DIRECTORY.mkdir(exist_ok=True)
     try:
         config = load_config(config_path)
         update_log_filenames(config)

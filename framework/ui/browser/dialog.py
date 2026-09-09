@@ -5,7 +5,7 @@ from typing import Callable
 from playwright.sync_api import Page, Dialog as PlaywrightDialog
 
 from framework.ui.constants.page_events import PageEvent
-from framework.ui.constants.timeouts import WaitTimeoutsMs
+from framework.ui.constants.timeouts import Timeouts
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ class DialogHandler:
     def page(self) -> Page:
         return self._page
 
-    def _wait_for_dialog_state(self, timeout: int = WaitTimeoutsMs.WAIT_PAGE_LOAD, should_be_open: bool = True) -> bool:
+    def _wait_for_dialog_state(self, timeout: int = Timeouts.WAIT_PAGE_LOAD, should_be_open: bool = True) -> bool:
         """
         Wait for the dialog to be either open or closed.
 
@@ -55,7 +55,7 @@ class DialogHandler:
             logger.warning(message) if should_be_open else logger.debug(message)
             return False if should_be_open else True
 
-    def is_dialog_opened(self, timeout: int = WaitTimeoutsMs.WAIT_PAGE_LOAD) -> bool:
+    def is_dialog_opened(self, timeout: int = Timeouts.WAIT_PAGE_LOAD) -> bool:
         """
         Check if a dialog is currently opened within the given timeout.
 
@@ -65,7 +65,7 @@ class DialogHandler:
         logger.debug(f'Check if dialog is opened within {timeout} ms')
         return self._wait_for_dialog_state(timeout=timeout, should_be_open=True)
 
-    def is_dialog_closed(self, timeout: int = WaitTimeoutsMs.WAIT_PAGE_LOAD) -> bool:
+    def is_dialog_closed(self, timeout: int = Timeouts.WAIT_PAGE_LOAD) -> bool:
         """
         Check if no dialog is open within the given timeout.
 
