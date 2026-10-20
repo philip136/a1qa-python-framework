@@ -5,12 +5,13 @@ from pathlib import Path
 from typing import Dict
 
 import pytest
-from playwright.sync_api import sync_playwright, Playwright
+from playwright.sync_api import Playwright, sync_playwright
 
-from configs.settings import DEFAULT_CONFIGURATION_FILE, TEST_APP_URL
+from configs.settings import DEFAULT_CONFIGURATION_FILE
 from framework.logger import logger
 from framework.ui.browser.browser import Browser
 from framework.ui.constants.timeouts import Timeouts
+from models.registration_creds import RegistrationCreds
 
 PROJECT_ROOT_DIR = Path(__file__).parent.resolve()
 
@@ -32,7 +33,8 @@ def _get_browser(playwright: Playwright, browser_type: SupportedBrowser, headles
     browser = browser_map.get(browser_type, playwright.chromium)
     browser_instance = browser.launch(headless=headless)
     context = browser_instance.new_context(viewport=DEFAULT_VIEWPORT_SIZE)
-    context.set_default_timeout(Timeouts.WAIT_PAGE_LOAD)
+    context.set_default_timeout(Timeouts.EXPLICIT_WAIT)
+    context.set_default_navigation_timeout(Timeouts.WAIT_PAGE_LOAD)
 
     page = context.new_page()
 
@@ -63,7 +65,6 @@ def browser(request):
         browser_instance = _get_browser(playwright, SupportedBrowser(browser_channel), headless)
         yield browser_instance
 
-        # Close the browser after the test is done
         browser_instance.page.close()
         browser_instance.page.context.browser.close()
 
@@ -120,3 +121,36 @@ def cleanup_download_dir(download_dir: Path) -> Path:
         yield download_dir
     finally:
         shutil.rmtree(download_dir, ignore_errors=True)
+
+
+@pytest.fixture(scope="session")
+def email_data() -> dict:
+    file_path = PROJECT_ROOT_DIR / "configs" / "test_data" / "email_data.json"
+
+    with open(file_path, encoding="utf-8") as file:
+        return json.load(file)
+
+
+@pytest.fixture
+def domains(email_data: dict) -> tuple[str, ...]:
+    return tuple(email_data["domains"])
+
+
+@pytest.fixture
+def first_card_creds(email_data: dict) -> RegistrationCreds:
+    return RegistrationCreds(
+        email_name=email_data["email_name"],
+        email_domain=email_data["email_domain"],
+        password=email_data["first_password"],
+        domain_extension=email_data["default_domain_extension"],
+    )
+
+
+@pytest.fixture
+def second_card_creds(email_data: dict) -> RegistrationCreds:
+    return RegistrationCreds(
+        email_name=email_data["email_name"],
+        email_domain=email_data["email_domain"],
+        password=email_data["second_password"],
+        domain_extension=email_data["default_domain_extension"],
+    )

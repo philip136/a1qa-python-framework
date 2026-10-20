@@ -1,0 +1,19 @@
+{
+  "email_name": "aqauser",
+  "email_domain": "example",
+  "first_password": "ZXCVB12345",
+  "second_password": "Aqauser12345",
+  "default_domain_extension": ".com",
+  "domains": [
+    ".org",
+    ".co.uk",
+    ".net",
+    ".gov",
+    ".de",
+    ".fr",
+    ".nl",
+    ".com",
+    ".be",
+    ".jpg"
+  ]
+}

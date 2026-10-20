@@ -9,7 +9,11 @@ class CookiesForm(BasePage):
     def __init__(self, page: Page):
         unique_element = Label(page, ".cookies", "Cookies form unique element")
         super().__init__(page, unique_element, "Cookies Form")
-        self._accept_cookies_button = Button(page, page.get_by_role("button", name="Yes"), "Accept cookies button")
+        self._accept_cookies_button = Button(
+            page,
+            "//button[text()='Not really,no']",
+            "Accept cookies button",
+        )
 
     def click_accept_cookies_button(self) -> None:
         self._accept_cookies_button.click()

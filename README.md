@@ -61,3 +61,17 @@ pytest --browser=firefox --headless
 
 - [Pytest Documentation](https://docs.pytest.org/en/latest/)
 - [Running Tests with Pytest](https://docs.pytest.org/en/latest/how-to/usage.html)
+
+## Unit 4 Practice Task
+
+Run the Unit 4 suite in Chromium:
+
+```sh
+pytest -m unit_4 --browser=chromium
+```
+
+Run it in headless mode:
+
+```sh
+pytest -m unit_4 --browser=chromium --headless
+```
